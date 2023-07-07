@@ -12,6 +12,10 @@ body{
     align-items: center;
     min-height: 100vh;
 }
+button a{
+    text-decoration: none;
+    color: #fff;
+}
 .box{
     background-color:#fff ;
     border-radius: 10px;
