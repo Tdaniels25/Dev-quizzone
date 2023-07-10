@@ -120,3 +120,17 @@ button a{
 span.text-color-primary{
     color: rgb(126, 83, 2) !important;
 }
+
+
+/*More quiz styling for the correct and incorrect answers*/
+.correct{
+    background: #9aeabc;
+}
+
+.incorrect{
+    background: #ff9393;
+}
+
+.btn:disabled{
+    cursor: no-drop;
+}

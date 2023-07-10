@@ -162,3 +162,89 @@ function showResults() {
 displayQuestion();
 
 
+// Code to update the score of the quiz and to display the correct and incorrect answers
+
+let questionElement = document.querySelector('.questionBox');
+let optionBoxs = document.querySelector('.optionBox');
+let nextButtons = document.getElementById('nextButton');
+let answerButtons = document.getElementById('answerButtons');
+
+function startQuiz() {
+  currentQuestionIndex = 0;
+  score = 0;
+  nextButton.innerHTML = "Next";
+  showQuestion();
+}
+
+function showQuestion() {
+  resetState();
+  let currentQuestion = quiz[currentQuestionIndex];
+  let questionNo = currentQuestionIndex + 1;
+  questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+  currentQuestion.options.forEach((option, index) => {
+    let button = document.createElement("button");
+    button.innerHTML = option;
+    button.classList.add("btn");
+    button.dataset.index = index; // Assign a dataset index for each button
+    answerButtons.appendChild(button);
+    button.addEventListener("click", selectAnswer);
+  });
+}
+
+function resetState() {
+  nextButton.style.display = "none";
+  while (answerButtons.firstChild) {
+    answerButtons.removeChild(answerButtons.firstChild);
+  }
+}
+
+function selectAnswer(e) {
+  let selectedBtn = e.target;
+  let selectedIndex = selectedBtn.dataset.index;
+  let currentQuestion = quiz[currentQuestionIndex];
+
+  if (selectedIndex == currentQuestion.answer) {
+    selectedBtn.classList.add("correct");
+    score++;
+  } else {
+    selectedBtn.classList.add("incorrect");
+    // Highlight the correct answer as well
+    let correctBtn = answerButtons.querySelector(`button[data-index="${currentQuestion.answer}"]`);
+    correctBtn.classList.add("correct");
+  }
+
+  // Disable all the buttons after selecting an answer
+  Array.from(answerButtons.children).forEach((button) => {
+    button.disabled = true;
+  });
+
+  // Show the Next button
+  nextButton.style.display = "block";
+}
+
+function showScore() {
+  resetState();
+  questionElement.innerHTML = `Your score is ${score} out of ${quiz.length}!`;
+  nextButton.innerHTML = "Play Again";
+  nextButton.style.display = "block";
+}
+
+function handleNextButton() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < quiz.length) {
+    showQuestion();
+  } else {
+    showScore();
+  }
+}
+
+nextButton.addEventListener("click", () => {
+  if (currentQuestionIndex < quiz.length) {
+    handleNextButton();
+  } else {
+    startQuiz();
+  }
+});
+
+startQuiz();
