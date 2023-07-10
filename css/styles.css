@@ -115,3 +115,8 @@ button a{
     display: inline-block;
 }
 /*Quiz page style end */
+
+/*Landing page changes*/
+span.text-color-primary{
+    color: rgb(126, 83, 2) !important;
+}

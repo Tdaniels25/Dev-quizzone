@@ -33,7 +33,7 @@ a:active {
 
 html .text-color-primary,
 html .text-primary {
-	color: #c19655 !important;
+	color: #c19655;
 }
 
 html .text-color-hover-primary:hover,
@@ -679,7 +679,7 @@ html .border-color-hover-light:hover {
 }
 
 html .box-shadow-1-primary:before {
-	box-shadow: 0 30px 90px #c19655 !important;
+	box-shadow: 0 30px 90px #c19655;
 }
 
 html .box-shadow-1-secondary:before {
