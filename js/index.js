@@ -92,145 +92,120 @@ const quizQuestions = [
     }
 ];
 
-
 class Quiz {
     constructor(questions, timer) {
       this.questions = questions;
       this.timer = timer;
-
+      this.currentQuestionIndex = 0;
+      this.score = 0;
+      this.timerInterval = null;
     }
-
-
+  
+    startQuiz() {
+      this.resetState();
+      this.startTimeout();
+      this.showQuestion();
+    }
+  
     startTimeout() {
       let totalTime = this.timer; // Timer duration in seconds
       let minutes = 0;
       let seconds = 0;
       let counter = 0;
   
-      let timer = setInterval(() => {
+      this.timerInterval = setInterval(() => {
         counter++;
         minutes = Math.floor((totalTime - counter) / 60);
         seconds = totalTime - minutes * 60 - counter;
   
-        const timerBox = document.querySelector('.timerBox');
-        timerBox.textContent = `Time Left: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        const timerElement = document.getElementById('timer');
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   
-  if (currentQuestionIndex < quiz.length) {
-    displayQuestion();
-  } else {
-    showResults();
+        if (counter >= totalTime) {
+          this.showScore();
+        }
+      }, 1000);
+    }
+  
+    showQuestion() {
+      const questionElement = document.getElementById('question');
+      const options = document.getElementsByClassName('option');
+  
+      const currentQuestion = this.questions[this.currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
+  
+      for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        option.textContent = currentQuestion.options[i].text;
+        option.classList.remove('correct', 'incorrect');
+        option.disabled = false;
+        option.addEventListener('click', this.selectAnswer.bind(this));
+      }
+    }
+  
+    resetState() {
+      const scoreElement = document.getElementById('score');
+      scoreElement.textContent = '0';
+  
+      clearInterval(this.timerInterval);
+    }
+  
+    selectAnswer(event) {
+      const selectedBtn = event.target;
+      const selectedIndex = Array.from(selectedBtn.parentNode.children).indexOf(selectedBtn);
+      const currentQuestion = this.questions[this.currentQuestionIndex];
+  
+      if (selectedIndex === currentQuestion.options.findIndex(option => option.correct)) {
+        selectedBtn.classList.add('correct');
+        this.score++;
+      } else {
+        selectedBtn.classList.add('incorrect');
+        const correctBtn = Array.from(selectedBtn.parentNode.children).find(btn =>
+          currentQuestion.options[Array.from(btn.parentNode.children).indexOf(btn)].correct
+        );
+        correctBtn.classList.add('correct');
+      }
+  
+      Array.from(selectedBtn.parentNode.children).forEach(btn => {
+        btn.disabled = true;
+      });
+  
+      
+      
+      const scoreElement = document.getElementById('score');
+      scoreElement.textContent = this.score.toString();
+  
+      this.currentQuestionIndex++;
+      if (this.currentQuestionIndex < this.questions.length) {
+        const nextButton = document.getElementById('nextButton');
+        nextButton.style.display = 'block';
+        nextButton.addEventListener('click', this.handleNextButton.bind(this));
+      } else {
+        this.showScore();
+      }
+    }
+  
+    handleNextButton() {
+      const nextButton = document.getElementById('nextButton');
+      nextButton.style.display = 'none';
+  
+      this.showQuestion();
+    }
+  
+    showScore() {
+      const questionElement = document.getElementById('question');
+      const options = document.getElementsByClassName('option');
+      const nextButton = document.getElementById('nextButton');
+  
+      questionElement.textContent = `Quiz completed. Your score is ${this.score} out of ${this.questions.length}.`;
+      Array.from(options).forEach(option => {
+        option.disabled = true;
+      });
+      nextButton.textContent = 'Play Again';
+      nextButton.style.display = 'block';
+      nextButton.addEventListener('click', this.startQuiz.bind(this));
+    }
   }
-
-// Event listener for "Next" button click
-nextButton.addEventListener("click", () => {
-  if (currentQuestionIndex < quiz.length) {
-    alert("Please select an option.");
-  }
-});
-
-// Function to show quiz results
-function showResults() {
-  alert(`Quiz completed. Your score is ${score} out of ${quiz.length}.`);
-  // You can perform additional actions or redirect to another page here
-}
-
-// Initialize quiz
-displayQuestion();
-
-// Code to update the score of the quiz and to display the correct and incorrect answers
-
-// Select DOM elements
-let questionElement = document.querySelector('.questionBox');
-let optionBoxs = document.querySelector('.optionBox');
-let nextButton = document.getElementById('nextButton');
-let answerButtons = document.getElementById('answerButtons');
-
-// Function to start the quiz
-function startQuiz() {
-  currentQuestionIndex = 0;
-  score = 0;
-  nextButton.innerHTML = "Next";
-  showQuestion();
-}
-
-// Function to display the current question and options
-function showQuestion() {
-  resetState();
-  let currentQuestion = quiz[currentQuestionIndex];
-  let questionNo = currentQuestionIndex + 1;
-  questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
-
-  // Create buttons for each option
-  currentQuestion.options.forEach((option, index) => {
-    let button = document.createElement("button");
-    button.innerHTML = option;
-    button.classList.add("btn");
-    button.dataset.index = index; // Assign a dataset index for each button
-    answerButtons.appendChild(button);
-    button.addEventListener("click", selectAnswer);
-  });
-}
-
-// Function to reset the state of the answer buttons
-function resetState() {
-  nextButton.style.display = "none";
-  while (answerButtons.firstChild) {
-    answerButtons.removeChild(answerButtons.firstChild);
-  }
-}
-
-// Function to handle answer selection
-function selectAnswer(e) {
-  let selectedBtn = e.target;
-  let selectedIndex = selectedBtn.dataset.index;
-  let currentQuestion = quiz[currentQuestionIndex];
-
-  // Check if the selected answer is correct
-  if (selectedIndex == currentQuestion.answer) {
-    selectedBtn.classList.add("correct");
-    score++;
-  } else {
-    selectedBtn.classList.add("incorrect");
-    // Highlight the correct answer as well
-    let correctBtn = answerButtons.querySelector(`button[data-index="${currentQuestion.answer}"]`);
-    correctBtn.classList.add("correct");
-  }
-
-  // Disable all the buttons after selecting an answer
-  Array.from(answerButtons.children).forEach((button) => {
-    button.disabled = true;
-  });
-
-  // Show the Next button
-  nextButton.style.display = "block";
-}
-
-// Function to display the final score
-function showScore() {
-  resetState();
-  questionElement.innerHTML = `Your score is ${score} out of ${quiz.length}!`;
-  nextButton.innerHTML = "Play Again";
-  nextButton.style.display = "block";
-}
-
-// Function to handle the next button click
-function handleNextButton() {
-  currentQuestionIndex++;
-  if (currentQuestionIndex < quiz.length) {
-    showQuestion();
-  } else {
-    showScore();
-  }
-}
-
-// Event listener for the next button click
-nextButton.addEventListener("click", () => {
-  if (currentQuestionIndex < quiz.length) {
-    handleNextButton();
-  } else {
-    startQuiz();
-  }
-});
-
-// Start the quiz
-startQuiz();
+  
+  const quiz = new Quiz(quizQuestions, 300);
+  quiz.startQuiz();
