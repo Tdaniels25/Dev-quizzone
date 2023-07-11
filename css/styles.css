@@ -118,19 +118,25 @@ button a{
 
 /*Landing page changes*/
 span.text-color-primary{
-    color: rgb(126, 83, 2) !important;
+    color: rgb(170, 127, 48) !important;
 }
 
 
 /*More quiz styling for the correct and incorrect answers*/
-.correct{
+button.correct{
     background: #9aeabc;
 }
 
-.incorrect{
+button.incorrect{
     background: #ff9393;
 }
 
 .btn:disabled{
     cursor: no-drop;
+}
+
+.btn:hover{
+background-color:rgb(170, 124, 38) !important;
+color: #fff;
+
 }
