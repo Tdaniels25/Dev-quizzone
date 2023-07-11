@@ -1,3 +1,4 @@
+//Array of quiz questions
 const quizQuestions = [
     {
         question: "Which HTML attribute is used to specify the width of an image?",
