@@ -124,12 +124,12 @@ button a{
     display: inline-block;
 }
 
-.corrct{
-    background: #9aeabc;
+.correct{
+    background: #9aeabc !important;
 }
 
 .incorrect {
-    background: #ff9393;
+    background: #ff9393 !important;
 }
 
 .modal {
@@ -172,11 +172,11 @@ span.text-color-primary{
 
 
 /*More quiz styling for the correct and incorrect answers*/
-button.correct{
+.correct{
     background: #9aeabc;
 }
 
-button.incorrect{
+.incorrect{
     background: #ff9393;
 }
 
